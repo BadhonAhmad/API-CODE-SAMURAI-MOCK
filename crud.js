@@ -15,9 +15,26 @@ const updateItem = (id, title, author, genre, price,callback) =>{
             return callback(new Error(`book with id: ${id} was not found`))
         }
         const sql = `UPDATE mock  SET title = ?, author = ?,genre = ?, price = ? WHERE id = ?`
-    db.run(sql, [title, author, genre, price, id], callback)
+        db.run(sql, [title, author, genre, price, id], callback)
     })   
 }
 
+const getSingleItem = (id, callback) =>{
+    const nam = `SELECT * FROM mock WHERE id = ?`;
+    db.get(nam,[id],(err,row)=>{
+        if(err){
+            return callback(err);
+        }
+        if(!row){
+            return callback(new Error(`book with id: ${id} was not found`));
+        }
+        const sql = `SELECT * FROM mock WHERE id = ?`
+        db.get(sql,[id],callback);
+    })
+}
 
-module.exports = {createItem,updateItem}
+const getAllBooks = (callback) => {
+    const data = `SELECT * FROM mock`
+    db.all(data,[],callback);
+}
+module.exports = {createItem,updateItem,getSingleItem,getAllBooks}

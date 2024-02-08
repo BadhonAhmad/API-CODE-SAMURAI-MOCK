@@ -1,5 +1,5 @@
 const express = require('express');
-const {itemsClear,createItem, readItems, updateItem, deleteItem,getItemSingle} = require('./crud');
+const {itemsClear,createItem, getAllBooks, updateItem, deleteItem,getSingleItem} = require('./crud');
 
 const app = express();
 
@@ -22,12 +22,36 @@ app.post('/api/books',(req, res) =>{
 app.put('/api/books/:id',(req,res)=>{
     const id = req.params.id;
     const {title, author, genre, price} = req.body;
-    updateItem(id,title, author, genre, price,(err)=>{
+    updateItem(id,title,author,genre,price,(err)=>{
         if(err){
-            res.status(404).send({message:err.message});  
+            res.status(404).send({
+                message : err.message
+            });
         }
         else{
-            res.status(200).send({id,title, author, genre, price});
+            res.status(200).send({id,title,author,genre,price});
         }
     })
 })
+
+//get a single book
+app.get('/api/books/:id',(req,res)=>{
+    getSingleItem(req.params.id,(err,row) => {
+        if(err){
+            res.status(500).send({
+                message : err.message
+            });
+        }
+        else{
+            res.status(200).send(row);
+        }
+    }); 
+});
+
+
+app.get('/api/books',(req,res) =>{
+    getAllBooks((err,row)=>{
+        res.status(200).send({books:row});
+    })
+})
+//
